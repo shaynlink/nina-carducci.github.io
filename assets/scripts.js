@@ -12,4 +12,11 @@ $(document).ready(function() {
         showTags: true,
         tagsPosition: 'top'
     });
+
+    $('img[data-aspect-ratio').each(function() {
+        const img = $(this);
+        const aspectRatio = img.data('aspect-ratio');
+        const [width, heigth] = aspectRatio.split(':');
+        img.css('aspect-ratio', `auto ${width} / ${heigth}`);
+    })
 });
