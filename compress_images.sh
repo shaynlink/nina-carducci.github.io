@@ -5,7 +5,7 @@ convert_to_webp() {
   local input_file="$1"
   local output_file="${input_file%.*}.webp"
 
-  cwebp -q 10 -mt -m 6 -sharpness 5 -f 100 -af $input_file -o $output_file
+  cwebp -q 5 -alpha_q 0 -pass 10 -mt -m 6 -sharpness 7 -f 100 -partition_limit 20 -strong -sharp_yuv -sns 100 -partition_limit 100 $input_file -o $output_file
   if [ $? -ne 0 ]; then
     echo "Failed to convert: $input_file"
   fi
