@@ -5,9 +5,16 @@ convert_to_webp() {
   local input_file="$1"
   local output_file="${input_file%.*}.webp"
 
-  cwebp -q 5 -alpha_q 0 -pass 10 -mt -m 6 -sharpness 7 -f 100 -partition_limit 20 -strong -sharp_yuv -sns 100 -partition_limit 100 $input_file -o $output_file
+  cwebp -q 5 -alpha_q 0 -pass 10 -mt -m 6 -sharpness 7 -f 100 -partition_limit 20 -strong -sharp_yuv -sns 100 -partition_limit 100 -quiet $input_file -o $output_file
+
   if [ $? -ne 0 ]; then
     echo "Failed to convert: $input_file"
+  fi
+
+  size=$(ls -l $output_file | awk '{print $5}')
+
+  if [ $size -gt 1000000 ]; then
+    echo "> [WARN] $output_file need to be compressed\n"
   fi
 }
 
@@ -26,7 +33,6 @@ process_directory() {
 
       if [[ $mimetype != image/webp ]]; then
         if [[ $mimetype == image/* ]]; then
-            echo "Converting: $entry"
             convert_to_webp "$entry"
         fi
       fi
@@ -48,6 +54,8 @@ if [ ! -d "$input_directory" ]; then
   echo "The specified directory does not exist."
   exit 1
 fi
+
+echo "Processing directory: $input_directory\n\n"
 
 # Process the directory and its subdirectories
 process_directory "$input_directory"
